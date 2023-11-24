@@ -1,0 +1,79 @@
+Royal Academy of Engineering:
+The Royal Academy of Engineering, led by CEO Hayan Sim, is dedicated to harnessing the power of engineering to build a sustainable society and an inclusive economy. The Academy hosts critical conversations to explore topical issues important for engineering and society. It has been focusing on five technologies deemed critical to the UK: Quantum Technologies, semiconductors, engineering biology, artificial intelligence, and future telecoms. The Academy collaborates with experts in these fields to understand these technologies, their importance, and how to capture their benefits and manage their risks.
+
+Queen Elizabeth Prizer Engineering Foundation:
+The Queen Elizabeth Prizer Engineering Foundation, under the leadership of CEO Hayan Sim, hosts critical conversations to explore topical issues in engineering and society. The foundation aims to harness the power of engineering to build a sustainable society and an inclusive economy. It has been exploring critical technologies such as Quantum Technologies, semiconductors, engineering biology, artificial intelligence, and future telecoms through a miniseries of conversations.
+
+March 2023:
+In March 2023, the UK government published its Science and Technology framework, identifying five technologies critical to the UK: Quantum Technologies, semiconductors, engineering biology, artificial intelligence, and future telecoms.
+
+UK Science and Technology:
+The UK Science and Technology framework, published by the government in March 2023, identifies five technologies as most critical to the UK: Quantum Technologies, semiconductors, engineering biology, artificial intelligence, and future telecoms. The framework is explored through a series of critical conversations with experts to understand these technologies, their importance, and how to manage their benefits and risks.
+
+Quantum Technologies:
+Quantum Technologies is one of the five technologies identified as most critical to the UK in the government's UK Science and Technology framework published in March 2023. The Royal Academy of Engineering has been exploring these technologies, including Quantum Technologies, through a series of critical conversations with experts.
+
+Erikson:
+Erikson is a telecommunications company where Dr. Malik Satia serves as the Chief Technology Officer. Dr. Satia and his team focus on 5G technology development, aiming to enhance mobile broadband experiences and extend 5G connectivity to various industries undergoing digital transformation. This work is crucial in transforming user experiences and digitizing industries by providing ultra-reliable, low-latency connectivity.
+
+University of Bristol:
+The University of Bristol hosts a large research center led by Professor Dimitro Simidu, an Academy Fellow and professor of high performance networks. The center, which includes about 200 academics and researchers, works across a range of technologies including IoT, wireless, optical, cloud physical infrastructure, and cloud services. Professor Simidu's research focuses on network architectures and performance optimization, with a particular interest in smart infrastructure, smart cities, and 5G and 6G environments. The work conducted at the University of Bristol is crucial for societal and economic development, as it contributes to the design of future telecommunications systems that are resilient, inclusive, fair, and available to all.
+
+Luminosity:
+Luminosity is a company that specializes in the development of hollow core fiber technology. It was acquired by Microsoft in December last year, and its co-founder and former CEO, Dr. David Parker, is now part of the leadership team for Azure fiber. Luminosity's hollow core fiber technology is a key component in the telecommunications industry, providing faster data transmission speeds and lower latency than traditional solid core fiber.
+
+Microsoft:
+Microsoft acquired Luminosity, a world leader in holow fiber technology, in December last year. Dr. David Parker, a co-founder and former CEO of Luminosity, is now part of the leadership team for Azure fiber at Microsoft.
+
+Azure:
+Azure is a cloud computing service created by Microsoft for building, testing, deploying, and managing applications and services through Microsoft-managed data centers. It provides software as a service (SaaS), platform as a service (PaaS) and infrastructure as a service (IaaS) and supports many different programming languages, tools and frameworks, including both Microsoft-specific and third-party software and systems. Dr. David Parker, a former CEO of Luminosity and a world leader in holow fiber technology, is part of the leadership team for Azure fiber.
+
+Financial Services:
+Financial Services are poised to be transformed by the future of telecommunications, with the emergence of enhanced connectivity along with technologies such as 5G, 6G, AI, and cloud computing and storage. This transformation will increase the efficiency of trade and commerce by enabling transactions to be conducted instantaneously and opening up new avenues for businesses to expand internationally, connect with customers worldwide, and explore global markets.
+
+Health Care:
+Health Care is one of the industries poised to be transformed by the future of telecommunications, with the emergence of enhanced connectivity along with technologies such as 5G, 6G, AI, and cloud computing and storage.
+
+Transportation:
+Transportation is an industry that is poised to be transformed by advancements in telecommunications, particularly through the deployment of 5G and 6G technologies. These technologies can provide reliable, low latency, and high capacity connections that are crucial for the digital transformation of the transportation sector.
+
+Manufacturing:
+Manufacturing industries are undergoing digital transformation, with 5G technology playing a crucial role. The reliable, low latency, and high capacity connection provided by 5G is being leveraged to digitize various sectors including manufacturing. This transformation is enhancing user experiences and increasing efficiency in these industries.
+
+California:
+California is the location from which Dr. Malik Satia, an Academy fellow and chief technology officer at Erikson, joined the critical conversation on future telecommunications.
+
+2G:
+2G is a telecommunications standard that was mentioned by Dr. Malik Satia as the starting point of his over 33 years of experience in the telecoms industry.
+
+5G:
+5G is a future telecommunications technology that promises significant benefits for businesses and users, as it is a crucial utility for any modern digital society. It is expected to enhance mobile broadband experiences, enabling immersive experiences for emerging applications such as augmented reality and virtual reality. Furthermore, with its higher speeds and lower latency, 5G connectivity can be extended to various industries undergoing digital transformation, such as manufacturing, utilities, smart cities, and transportation. This reliable, low-latency, high-capacity connection provided by 5G is aimed at transforming user experiences and digitizing industries.
+
+4G:
+4G is a mobile broadband technology that significantly increased data transmission speeds, transforming the way people live by enabling more efficient and diverse digital experiences.
+
+Bristol:
+The University of Bristol is home to a large research center led by Professor Dimitro Simidu, an Academy Fellow and expert in high performance networks. The center, which includes about 200 academics and researchers, works across a range of technologies including IoT, wireless, optical, and cloud services. The research conducted at the University of Bristol is crucial to the development of future telecommunications systems that are resilient, inclusive, fair, and available to all, driving digital transformation in society and businesses.
+
+Physical Layer in Telecoms
+Description: The physical layer is a foundational component of telecom networks, consisting of both wired and wireless infrastructure. It is crucial for the overall functioning of telecom systems. This layer is undergoing developments to accommodate new technologies like hollow fiber optics for better performance and resilience.
+
+Network Layer in Telecoms
+Description: This layer manages the interconnections and operations of the telecom network. It is adapting to incorporate AI for network optimization and customization for end users. The network layer is crucial for the performance and efficiency of telecom systems.
+AI in Telecom Networks
+Description: Artificial Intelligence is becoming increasingly important in telecom networks for optimization and automation. AI networks embed intelligence for network optimization and customization, playing a key role in the evolution of telecom infrastructure.
+
+Convergence in Telecom
+Description: Convergence in telecom refers to the integration of various types of networks, like wireless, optical, terrestrial, and non-terrestrial (including satellite) networks. It is an emerging trend that aims to create more cohesive and efficient communication systems.
+
+Quantum Networks
+Description: Quantum networks represent the integration of quantum technology into communication systems. They are significant for future telecom development, particularly in enhancing security through Quantum Key Distribution (QKD) and potentially transforming network architecture.
+
+Joint Communications and Sensing
+Description: This emerging technology in telecoms involves using infrastructure not only for communication but also for environmental sensing. This can provide high-precision location services for applications like robotics.
+
+Free Space Optics
+Description: An emerging technology in telecommunications, free space optics involves the use of light in free space (air, outer space, or vacuum) to transmit data wirelessly. It is being considered for high-density environments and satellite links. Discussed in response to Will Stewart's question, it was highlighted as key for future telecoms, particularly in 6G networks.
+
+Quantum Key Distribution (QKD)
+Description: QKD is a secure communication method that uses quantum mechanics to encrypt data. In response to Melanie Hardman's question, it was noted as a current and practical application of quantum technology in telecom networks.

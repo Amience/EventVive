@@ -1,0 +1,17 @@
+Energy Consumption in Telecom Infrastructure
+Description: The challenge of minimizing energy consumption in telecom infrastructure is critical in the context of climate change. Addressing Jonathan Lyall's question about network threats, the discussion emphasized the need for energy-efficient and resilient networks.
+
+Trevor Gill's Inquiry
+Description: Trevor Gill asked about the necessity and affordability of developing new generations in telecoms, like 6G, and the possibility of letting 5G evolve gradually. The panelists agreed that an evolutionary approach is needed, with a focus on integrating and enhancing existing networks for universal coverage and accessibility.
+
+Melanie Hardman's Question
+Description: Melanie inquired about barriers to adopting quantum technologies in telecoms and what needs to be done to consider their implementation. The response highlighted Quantum Key Distribution (QKD) as an existing application and the need for integrating quantum computing within mainstream network architecture.
+
+Jonathan Lyall's Question
+Description: Jonathan asked about how new technologies and systems might offer improved resilience to threats to telecom networks. The panelists discussed the role of AI in enhancing network security and the importance of reducing the energy consumption of network infrastructure for environmental sustainability.
+
+Will Stewart's Question
+Description: Will Stewart inquired about the potential for free space optics in telecoms. The response emphasized its importance, especially in indoor and outdoor environments for access technology in 6G, and its integration into mainstream cellular systems.
+
+Grand Challenges Discussion
+Description: Prompted by Will Stewart's final question about the grand challenges for future telecoms, panelists identified key challenges: achieving seamless connectivity across different environments (space, air, ground), integrating adjacent technologies like smart materials and quantum computing with telecoms, and minimizing energy consumption of network infrastructures to contribute to net-zero targets.
