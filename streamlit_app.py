@@ -13,6 +13,10 @@ Also added to requirements.txt: pysqlite3-binary==0.5.2.post1
 #sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # End of solution
 
+import os
+import time
+import fcntl
+
 import streamlit as st
 from langchain import ConversationChain, PromptTemplate
 from langchain.agents import AgentExecutor
@@ -45,6 +49,23 @@ from dotenv import load_dotenv, find_dotenv
 # Initialize session states
 if "stored_session" not in st.session_state:
     st.session_state.stored_session = []
+
+
+def append_to_file_with_lock(user_message, file_path="user_messages.txt"):
+    """
+    Appends the given message to a text file with file locking to handle concurrency.
+
+    :param user_message: The message provided by the user to append to the file.
+    :param file_path: The path to the file where the message will be appended.
+    """
+    with open(file_path, "a") as file:
+        try:
+            # Acquire the lock
+            fcntl.flock(file.fileno(), fcntl.LOCK_EX)
+            file.write(user_message + "\n")
+        finally:
+            # Release the lock
+            fcntl.flock(file.fileno(), fcntl.LOCK_UN)
 
 
 # Define function to start a new chat
@@ -209,6 +230,8 @@ if user_message := st.chat_input("How can I help?"):
     #    {"input_documents": retrieved_knowledge_base, "human_input": user_message},
     #    return_only_outputs=True
     # )['output_text']
+    append_to_file_with_lock(user_message)
+
     if len(user_message) >= 200:
         user_message = "Tell me that my query was way to long in a sassy way, and advise it should be less than 200 characters long"
 
@@ -226,6 +249,9 @@ if user_message := st.chat_input("How can I help?"):
 #    file_name='LeanBoost_ConversationHistory.txt',
 #    mime='text',
 #)
+
+
+
 
 
 st.sidebar.write('''<p style="font-size:10px; color:black;"><i>
