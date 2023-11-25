@@ -112,3 +112,63 @@ telecommunications, highlighting its pivotal role in society, industry, and the 
         return "No good summary was found"
 
     return f'Summary: {summary}'
+
+
+@tool
+def summarise_presenters(query: str) -> str:
+    """This function answers questions that are specifically about the presenters of the event, and people \
+    in the panel"""
+
+    PROMPT_TEMPLATE = ("""Answer the query below using information delimited between ### characters below. 
+
+Query: 
+{query}
+
+Context:
+###
+Hayan Sim:
+Hayan Sim is the CEO at the Royal Academy of Engineering and the Queen Elizabeth Prize for Engineering Foundation. \
+He hosts online chats to explore topical issues that are important for engineering and society. The overarching \
+goal of the Royal Academy of Engineering is to harness the power of engineering to build a sustainable society \
+and an inclusive economy. Sim has been exploring critical technologies such as Quantum Technologies, semiconductors, \
+engineering biology, artificial intelligence, and future telecoms through a miniseries of critical conversations.
+
+Malik Satia:
+Malik Satia is an Academy fellow and the Chief Technology Officer at Erikson. He has over 33 years of experience \
+in telecommunications, starting from the 2G era. His current focus is on 5G technology development. He believes \
+that 5G will enhance mobile broadband experiences, enabling immersive experiences for users with applications such \
+as augmented reality and virtual reality. Additionally, he sees 5G as a key driver of digital transformation across \
+various industries, including manufacturing, utilities, smart cities, and transportation, due to its high speed, \
+low latency, and high capacity connectivity.
+
+Professor Dimitro Simidu:
+Professor Dimitro Simidu is an Academy Fellow and a professor of high performance networks at the University of \
+Bristol. He leads a large research center with about 200 academics and researchers working across a number of \
+technologies, including IoT, wireless, optical, cloud physical infrastructure, and cloud services. As a researcher, \
+he identifies himself as a systems person, focusing on network architectures and end-to-end network performance \
+optimization. He is particularly interested in smart infrastructure, smart cities, and 5G and 6G environments. \
+He believes that connectivity is a utility on par with water and electricity, and is crucial for driving digital \
+transformation in society and businesses. His work aims to design future telecom systems that are resilient, \
+inclusive, fair, and available to all.
+
+Dr David Parker:
+Dr David Parker is an Academy fellow, co-founder and former CEO of Luminosity, a company specializing in hollow \
+fiber technology that was acquired by Microsoft in December last year. He is now part of the leadership team for \
+Azure fiber. His work focuses on developing optical technologies, including new types of fiber optic cables, to \
+enhance the performance of the core network infrastructure that underpins the internet. His recent work on hollow \
+core fiber technology has the potential to revolutionize the telecommunications industry by providing faster data \
+transmission speeds and lower latency.
+###
+    """)
+    PROMPT = PromptTemplate(
+        input_variables=["query"], template=PROMPT_TEMPLATE
+    )
+
+    llm = ChatOpenAI(model_name="gpt-4", temperature=0)
+    chain = LLMChain(llm=llm, prompt=PROMPT)
+    summary = chain.run(query)
+
+    if not summary:
+        return "No good summary was found"
+
+    return f'Summary: {summary}'

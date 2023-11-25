@@ -6,11 +6,12 @@ requires sqlite3 >= 3.35.0.
 Follow instructions here: https://discuss.streamlit.io/t/issues-with-chroma-and-sqlite/47950/4
 
 Solution: need to rewrite sqlite3 with new pysqlite3.
-Also added to requirements.txt: pysqlite3-binary==0.5.2.post1
+- no need for pip install because this error is fixed on StreamLit server by adding to requirements
+- Add to requirements.txt: pysqlite3-binary==0.5.2.post1
 """
-#__import__('pysqlite3')
-#import sys
-#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # End of solution
 
 import streamlit as st
@@ -30,7 +31,7 @@ from langchain.text_splitter import MarkdownHeaderTextSplitter
 
 from Agent.prompts import ENTITY_EXTRACTION_PROMPT, ENTITY_SUMMARIZATION_PROMPT, ENTITY_MEMORY_CONVERSATION_PROMPT
 
-from Agent.Tools import create_your_own, eventvive, create_summary
+from Agent.Tools import create_your_own, eventvive, create_summary, summarise_presenters
 
 from langchain.tools.render import format_tool_to_openai_function
 
@@ -122,7 +123,7 @@ st.markdown('''<p style="font-family:sans-serif; color:Black; font-size: 12px;">
 MODEL = 'gpt-4-1106-preview'
 llm_temp = 0
 verbose = True
-tools = [create_your_own, eventvive, create_summary]
+tools = [create_your_own, eventvive, create_summary, summarise_presenters]
 functions = [format_tool_to_openai_function(f) for f in tools]
 llm = ChatOpenAI(model_name=MODEL, temperature=llm_temp)
 model = llm.bind(functions=functions)
