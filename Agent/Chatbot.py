@@ -1,6 +1,6 @@
 
-from CertiChat.Agent import Agent
-from CertiChat.Tools import create_your_own, search_wikipedia, search_cs25_e
+from EventVive.Agent import Agent
+from EventVive.Tools import create_your_own, search_wikipedia, search_cs25_e
 import openai
 import os
 from dotenv import load_dotenv, find_dotenv
