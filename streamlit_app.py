@@ -63,7 +63,7 @@ def new_chat():
 #openai.api_key = os.environ['OPENAI_API_KEY']
 
 # Set up sidebar with various options
-openai_api_key = st.sidebar.text_input(label="Enter the password", type="password", value=st.session_state['OPENAI_API_KEY'] if 'OPENAI_API_KEY' in st.session_state else '', placeholder="sk-...")
+openai_api_key = st.sidebar.text_input(label="Enter the password", type="password", value=st.session_state['OPENAI_API_KEY'] if 'OPENAI_API_KEY' in st.session_state else '', placeholder="...")
 if openai_api_key:
     #openai_api_key = 'sk-'
     st.session_state['OPENAI_API_KEY'] = openai_api_key
