@@ -22,7 +22,7 @@ def eventvive(query: str) -> str:
 
     # Load existing vector database
     embedding = OpenAIEmbeddings()
-    persist_directory_subpart = 'docs/chroma_tacit/'
+    persist_directory_subpart = 'docs/chroma/'
     vectordb_subpartE = Chroma(
         persist_directory=persist_directory_subpart,
         embedding_function=embedding
@@ -52,14 +52,15 @@ Query:
 
 Event Summary:
 ###
-In Hayan Sim's panel with Erikson, University of Bristol, and Microsoft experts, telecom's evolution to 6G with \
+In Dr Hayaatun Sillem's panel with Erikson (Dr Mallikarjun Tatipamula), University of Bristol \
+(Prof. Dimitra Simeonidou), and Microsoft (Dr David Parker) experts, telecom's evolution to 6G with \
 AI, quantum tech, augmented/virtual reality, and IoT is explored. Challenges like scaling innovation, workforce \
 skills, and security are discussed. The UK's telecom role is assessed, focusing on policy and research strengths, \
 and vendor gaps. Telecom's societal impact, the need for resilient, sustainable networks, and international \
-collaboration are emphasised. Discussed are holow fiber technology, UK's 6G strategy, Wireless Infrastructure \
+collaboration are emphasised. Discussed are hollow fiber technology, UK's 6G strategy, Wireless Infrastructure \
 Strategy, optical transponders, integrated space, air, and ground networks, university spin-outs, terrestrial \
 and non-terrestrial network integration, quantum cloud services, supply chain diversification, Azure fiber, and \
-telecom's role as a utility, its impact on digital transformation in industries, and nonlinearity in holow fiber.
+telecom's role as a utility, its impact on digital transformation in industries, and nonlinearity in hollow fiber.
     
 Key points from the discussion include:
 

@@ -75,15 +75,15 @@ else:
     #st.info("Obtain your password here: ")
     st.stop()
 
-st.sidebar.write('''<p style="font-family:sans-serif; color:Black; font-size: 12px;">
-    EventVive represents a breakthrough in how we interact with knowledge from significant events, \
-    like the Royal Academy of Engineering's "Critical Conversations" on "Future Telecommunications - \
-    A Critical Technology for a Critical Time?". Unlike traditional methods of information consumption, \
-    this agent allows you to have a conversation with the event itself, making the experience more personal \
-    and engaging. This level of interaction not only personalises the knowledge but also aligns it with your \
-    specific interests and queries, offering a unique and valuable learning experience.
-    </p>''',
-    unsafe_allow_html=True)
+#st.sidebar.write('''<p style="font-family:sans-serif; color:Black; font-size: 12px;">
+#    EventVive represents a breakthrough in how we interact with knowledge from significant events, \
+#    like the Royal Academy of Engineering's "Critical Conversations" on "Future Telecommunications - \
+#    A Critical Technology for a Critical Time?". Unlike traditional methods of information consumption, \
+#    this agent allows you to have a conversation with the event itself, making the experience more personal \
+#    and engaging. This level of interaction not only personalises the knowledge but also aligns it with your \
+#    specific interests and queries, offering a unique and valuable learning experience.
+#   </p>''',
+#    unsafe_allow_html=True)
 
 # Add a button to start a new chat
 st.sidebar.button("New Chat", on_click=new_chat, type='primary')
@@ -107,15 +107,15 @@ st.markdown(
     </p>''',
     unsafe_allow_html=True)
 
-st.markdown('''<p style="font-family:sans-serif; color:Black; font-size: 12px;">
-    Dive into an interactive adventure with EventVive! If you're not sure where to begin, \
-    just throw a question my way. Try asking, "What's the scope on this event?", \
-    "Hit me with the hottest topics discussed!", "Zoom into the 5G tech talks, will you?", \
-    "Did they chat about climate impacts at all?" or better yet, tell me about what you're working on, and \
-    let's explore how this event's insights can spice up your project. \
-    Let's deep dive into the details and uncover some hidden gems!
-    </p>''',
-    unsafe_allow_html=True)
+#st.markdown('''<p style="font-family:sans-serif; color:Black; font-size: 12px;">
+#    Dive into an interactive adventure with EventVive! If you're not sure where to begin, \
+#    just throw a question my way. Try asking, "What's the scope on this event?", \
+#    "Hit me with the hottest topics discussed!", "Zoom into the 5G tech talks, will you?", \
+#    "Did they chat about climate impacts at all?" or better yet, tell me about what you're working on, and \
+#    let's explore how this event's insights can spice up your project. \
+#    Let's deep dive into the details and uncover some hidden gems!
+#    </p>''',
+#    unsafe_allow_html=True)
 
 
 # ################################################
@@ -149,10 +149,11 @@ if 'combined_memory' not in st.session_state:
     )
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are a helpful but sassy assistant whose knowledge and expertise are specifically \
-    focused on [Name of Event]. Your role is to assist in discussions about various aspects of this event, \
+    ("system", """You are a helpful but slightly sassy in the UK style assistant whose knowledge and \
+    expertise are specifically focused on one event. Keep your language professional but informal. \
+    Your role is to assist in discussions about various aspects of this event, \
     providing information and insights based on what was discussed there. Your assistance is confined to the \
-    topics, data, and discussions that took place during this event. Your name is Maya and you work for EventVive"""),
+    topics, data, and discussions that took place during this event. Your name is Eve and you work for EventVive."""),
     MessagesPlaceholder(variable_name="history"),
     ("user", "{input}"),
     MessagesPlaceholder(variable_name="agent_scratchpad")
@@ -196,6 +197,32 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+
+# Display AI message on initial launch
+with st.chat_message("assistant"):
+    st.markdown("""
+    <p style="font-family:sans-serif; color:Black; font-size: 13px;">
+Hello and a warm welcome to EventVive 👋 I'm Eve, your go-to for a nifty bit of banter and insight on the \
+world of significant events. Delighted to have you with us! <br><br> Today, we're diving into the rich discussions \
+from the Royal Academy of Engineering's "Critical Conversations", \
+specifically the thrilling world of telecom's leap towards 6G, blending AI, quantum tech, augmented reality, \
+IoT, and more. <br><br> In a nutshell, we've got a panel featuring Dr. Hayaatun Sillem, alongside \
+Dr Mallikarjun Tatipamula, Prof. Dimitra Simeonidou, and Dr David Parker, whizzes from Erikson, the \
+University of Bristol, and Microsoft, tackling the evolution from 5G to 6G, addressing challenges like \
+innovation scaling, workforce skills, and security. There's a lot on the table - from the UK's role in \
+global telecom to the societal impacts and the nitty-gritty of technologies like hollow fibre and \
+quantum cloud services.<br><br> Curious about the event's speakers, their backgrounds, or the riveting debates \
+they engaged in? I'm here to dish \
+out all those details. Keen to understand the technical aspects of the technologies discussed? We can explore \
+those depths together. <br><br> And here's the cherry on top: if you're wrestling with your own case or project, \
+bring it to the table! We'll \
+weave in diverse viewpoints and insights from these events, enriching and enhancing your perspectives. It's not \
+just about learning what was said, but applying it to your unique situation. <br><br> So, what's on your mind? Let's \
+get cracking and make this a conversation to remember! 🕵️‍♀️📚🌟
+</p>
+    """, unsafe_allow_html=True)
+
+
 
 # React to user input
 if user_message := st.chat_input("How can I help?"):
