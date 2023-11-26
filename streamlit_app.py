@@ -239,7 +239,7 @@ if user_message := st.chat_input("How can I help?"):
     # )['output_text']
 
     if len(user_message) >= 200:
-        user_message = "Tell me that my query was way to long in a sassy way, and advise it should be less than 200 characters long"
+        user_message = "Tell me that my query was way to long in a UK style sassy way, and advise it should be less than 200 characters long"
 
     AI_response = qa.invoke({"input": user_message})
     AI_output = AI_response['output']
