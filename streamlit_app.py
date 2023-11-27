@@ -9,9 +9,9 @@ Solution: need to rewrite sqlite3 with new pysqlite3.
 - no need for pip install because this error is fixed on StreamLit server by adding to requirements
 - Add to requirements.txt: pysqlite3-binary==0.5.2.post1
 """
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+#__import__('pysqlite3')
+#import sys
+#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # End of solution
 
 import streamlit as st
@@ -149,7 +149,7 @@ if 'combined_memory' not in st.session_state:
     )
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are a helpful but slightly sassy in the UK style assistant whose knowledge and \
+    ("system", """You are a helpful assistant whose knowledge and \
     expertise are specifically focused on one event. Keep your language professional but informal. \
     Your role is to assist in discussions about various aspects of this event, \
     providing information and insights based on what was discussed there. Your assistance is confined to the \
@@ -199,30 +199,39 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Display AI message on initial launch
-with st.chat_message("assistant"):
-    st.markdown("""
-    <p style="font-family:sans-serif; color:Black; font-size: 13px;">
+if len(st.session_state.messages) == 0:
+    welcome_message = """
 Hello and a warm welcome to EventVive 👋 I'm Eve, your go-to for a nifty bit of banter and insight on the \
-world of significant events. Delighted to have you with us! <br><br> Today, we're diving into the rich discussions \
+world of significant events. Delighted to have you with us! \n\n
+
+Today, we're diving into the rich discussions \
 from the Royal Academy of Engineering's "Critical Conversations", \
 specifically the thrilling world of telecom's leap towards 6G, blending AI, quantum tech, augmented reality, \
-IoT, and more. <br><br> In a nutshell, we've got a panel featuring Dr. Hayaatun Sillem, alongside \
+IoT, and more.\n\n
+
+In a nutshell, we've got a panel featuring Dr. Hayaatun Sillem, alongside \
 Dr Mallikarjun Tatipamula, Prof. Dimitra Simeonidou, and Dr David Parker, whizzes from Erikson, the \
 University of Bristol, and Microsoft, tackling the evolution from 5G to 6G, addressing challenges like \
 innovation scaling, workforce skills, and security. There's a lot on the table - from the UK's role in \
 global telecom to the societal impacts and the nitty-gritty of technologies like hollow fibre and \
-quantum cloud services.<br><br> Curious about the event's speakers, their backgrounds, or the riveting debates \
+quantum cloud services.\n\n
+
+Curious about the event's speakers, their backgrounds, or the riveting debates \
 they engaged in? I'm here to dish \
 out all those details. Keen to understand the technical aspects of the technologies discussed? We can explore \
-those depths together. <br><br> And here's the cherry on top: if you're wrestling with your own case or project, \
+those depths together.\n\n
+
+And here's the cherry on top: if you're wrestling with your own case or project, \
 bring it to the table! We'll \
 weave in diverse viewpoints and insights from these events, enriching and enhancing your perspectives. It's not \
-just about learning what was said, but applying it to your unique situation. <br><br> So, what's on your mind? Let's \
+just about learning what was said, but applying it to your unique situation.\n\n
+
+So, what's on your mind? Let's \
 get cracking and make this a conversation to remember! 🕵️‍♀️📚🌟
-</p>
-    """, unsafe_allow_html=True)
-
-
+    """
+    with st.chat_message("assistant"):
+        st.markdown(welcome_message)
+    st.session_state.messages.append({"role": "assistant", "content": welcome_message})
 
 # React to user input
 if user_message := st.chat_input("How can I help?"):
