@@ -8,3 +8,5 @@ param==2.0.1
 wikipedia==1.4.0
 pysqlite3-binary==0.5.2.post1
 st-gsheets-connection==0.0.3
+pydantic==2.5.2
+gspread==5.12.3
