@@ -9,9 +9,9 @@ Solution: need to rewrite sqlite3 with new pysqlite3.
 - no need for pip install because this error is fixed on StreamLit server by adding to requirements
 - Add to requirements.txt: pysqlite3-binary==0.5.2.post1
 """
-#__import__('pysqlite3')
-#import sys
-#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # End of solution
 
 import streamlit as st
