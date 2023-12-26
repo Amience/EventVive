@@ -15,37 +15,71 @@ Solution: need to rewrite sqlite3 with new pysqlite3.
 # End of solution
 
 import streamlit as st
-from langchain import ConversationChain, PromptTemplate
-from langchain.agents import AgentExecutor
-from langchain.agents.format_scratchpad import format_to_openai_functions
-from langchain.agents.output_parsers import OpenAIFunctionsAgentOutputParser
-from langchain.chains.question_answering import load_qa_chain
-from langchain.chat_models import ChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.memory import ConversationEntityMemory, ConversationBufferMemory, CombinedMemory, \
-    ConversationSummaryMemory
-from langchain.memory.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.schema.runnable import RunnablePassthrough
-from langchain.text_splitter import MarkdownHeaderTextSplitter
-
-from Agent.prompts import ENTITY_EXTRACTION_PROMPT, ENTITY_SUMMARIZATION_PROMPT, ENTITY_MEMORY_CONVERSATION_PROMPT
-
-from Agent.Tools import create_your_own, eventvive, create_summary, summarise_presenters
-
+from Agent.Tools import create_your_own, TelecomFuture, TelecomFuture_create_summary, TelecomFuture_summarise_presenters, GreenReport2023, GreenReport2023_create_summary
+from Agent.Agent import Agent
 from langchain.tools.render import format_tool_to_openai_function
-
+import hmac
+from gsheet import create_gsheet_connection, save_data_to_sheet, save_login_to_sheet, save_feedback_to_sheet
 import openai
-# ---------------------------------------------------
 import os
+# ---------------------------------------------------
+
 from dotenv import load_dotenv, find_dotenv
+
+
+def check_password():
+    """Returns `True` if the user had a correct password."""
+
+    def login_form():
+        """Form with widgets to collect user information"""
+        with st.form("Credentials"):
+            st.text_input("Username", key="username")
+            st.text_input("Password", type="password", key="password")
+            st.form_submit_button("Log in", on_click=password_entered)
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if st.session_state["username"] in st.secrets[
+            "passwords"
+        ] and hmac.compare_digest(
+            st.session_state["password"],
+            st.secrets.passwords[st.session_state["username"]],
+        ):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the username or password.
+            # del st.session_state["username"]
+
+            # If login is successful, save the record to Google Sheets
+            spreadsheet = create_gsheet_connection()
+            login_data_sheet = spreadsheet.worksheet("login_data")
+            save_login_to_sheet(login_data_sheet, st.session_state["username"])
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the username + password is validated.
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Show inputs for username + password.
+    login_form()
+    if "password_correct" in st.session_state:
+        st.error("😕 User not known or password incorrect")
+    return False
+
+
+if not check_password():
+    st.stop()
+
+st.session_state.username = st.session_state["username"]
+# ---------------------------------------------------
+# ---------------------------------------------------
+# ---------------------------------------------------
+# Main Streamlit app starts here
 # ---------------------------------------------------
 # ---------------------------------------------------
 # ---------------------------------------------------
 
-# Initialize session states
-if "stored_session" not in st.session_state:
-    st.session_state.stored_session = []
+
 
 
 # Define function to start a new chat
@@ -54,9 +88,14 @@ def new_chat():
     Clears session state and starts a new chat.
     """
     st.session_state.stored_session.append(st.session_state.messages)
-    st.session_state.entity_memory.entity_store.clear()
-    st.session_state.entity_memory.buffer.clear()
+    #st.session_state.entity_memory.entity_store.clear()
+    #st.session_state.entity_memory.buffer.clear()
+    if 'agent' in st.session_state:
+        st.session_state.pop('agent') # To remove 'agent' from session_state
     st.session_state.messages = []
+
+
+
 
 
 # Get API key
@@ -64,16 +103,18 @@ def new_chat():
 #openai.api_key = os.environ['OPENAI_API_KEY']
 
 # Set up sidebar with various options
-openai_api_key = st.sidebar.text_input(label="Enter the password", type="password", value=st.session_state['OPENAI_API_KEY'] if 'OPENAI_API_KEY' in st.session_state else '', placeholder="...")
-if openai_api_key:
-    #openai_api_key = 'sk-'
-    st.session_state['OPENAI_API_KEY'] = openai_api_key
-    os.environ['OPENAI_API_KEY'] = openai_api_key
-    openai.api_key = st.session_state['OPENAI_API_KEY']
-else:
-    st.error("You must enter the correct password to continue.")
-    #st.info("Obtain your password here: ")
-    st.stop()
+# openai_api_key = st.sidebar.text_input(label="Enter the password", type="password", value=st.session_state['OPENAI_API_KEY'] if 'OPENAI_API_KEY' in st.session_state else '', placeholder="...")
+#if openai_api_key:
+#    st.session_state['OPENAI_API_KEY'] = openai_api_key
+#    os.environ['OPENAI_API_KEY'] = openai_api_key
+#    openai.api_key = st.session_state['OPENAI_API_KEY']
+#else:
+#    st.error("You must enter the correct password to continue.")
+#    #st.info("Obtain your password here: ")
+#    st.stop()
+
+
+
 
 #st.sidebar.write('''<p style="font-family:sans-serif; color:Black; font-size: 12px;">
 #    EventVive represents a breakthrough in how we interact with knowledge from significant events, \
@@ -89,13 +130,15 @@ else:
 st.sidebar.button("New Chat", on_click=new_chat, type='primary')
 
 # Allow the user to clear all stored conversation sessions
-if st.session_state.stored_session:
-    if st.sidebar.checkbox("Clear-all"):
-        st.session_state.stored_session = []
-        st.session_state.stored_session.append(st.session_state.messages)
-        st.session_state.entity_memory.entity_store.clear()
-        st.session_state.entity_memory.buffer.clear()
-        st.session_state.messages = []
+#if st.session_state.stored_session:
+#    if st.sidebar.checkbox("Clear-all"):
+#        st.session_state.stored_session = []
+#        st.session_state.stored_session.append(st.session_state.messages)
+#        st.session_state.entity_memory.entity_store.clear()
+#        st.session_state.entity_memory.buffer.clear()
+#        st.session_state.messages = []
+
+
 
 # Set up the Streamlit app layout
 st.title("️🐝 EventVive")
@@ -117,78 +160,107 @@ st.markdown(
 #    </p>''',
 #    unsafe_allow_html=True)
 
+# Initialize session states
+if "stored_session" not in st.session_state:
+    st.session_state.stored_session = []
+
+
 
 # ################################################
 # ## AI MODEL
+# Define the options for the select box
+with st.sidebar:
+    # Define the options and their descriptions
+    options = {
+        "TelecomFuture": "Future telecommunications - a critical technology for a critical time? by Royal Academy of Engineering",
+        "GreenReport2023": "ANNUAL REPORT 2022-2023 by Greener by Design"
+    }
+    # Display the title for the selection
+    #st.write("Select an option")
+    # Single radio button group for options
+    selected_option = st.radio("", list(options.keys()), key="user_selection")
+    # Check if the selection has changed
+    if 'last_selection' in st.session_state and st.session_state.last_selection != selected_option:
+        if 'agent' in st.session_state:
+            # Perform any cleanup if necessary
+            # st.session_state.agent.cleanup()
+            st.session_state.pop('agent')
+            st.session_state.messages = []
+    # Update the last_selection in the session state
+    st.session_state.last_selection = selected_option
+    # Display the description for the selected option
+    st.caption(options[selected_option])
+
+openai_api_key = st.secrets["openAI"]["OPENAI_API_KEY"]
+st.session_state['OPENAI_API_KEY'] = openai_api_key
+os.environ['OPENAI_API_KEY'] = openai_api_key
+openai.api_key = st.session_state['OPENAI_API_KEY']
+
 MODEL = 'gpt-4-1106-preview'
 llm_temp = 0
 verbose = True
-tools = [create_your_own, eventvive, create_summary, summarise_presenters]
-functions = [format_tool_to_openai_function(f) for f in tools]
-llm = ChatOpenAI(model_name=MODEL, temperature=llm_temp)
-model = llm.bind(functions=functions)
-# Create a ConversationEntityMemory object if not already created
-if 'entity_memory' not in st.session_state:
-    st.session_state.entity_memory = ConversationEntityMemory(
-        llm=llm,
-        entity_extraction_prompt=ENTITY_EXTRACTION_PROMPT,
-        entity_summarization_prompt=ENTITY_SUMMARIZATION_PROMPT,
-        return_messages=True,
-        memory_key="chat_history",
-    )
-# DEFINITION BUT NOT USED IN THE CODE YET. MEMORY KEY ISSUES
-if 'summary_memory' not in st.session_state:
-    st.session_state.summary_memory = ConversationSummaryMemory(
-        llm=llm,
-        input_key="input",
-        memory_key="chat_history",
-    )
-if 'combined_memory' not in st.session_state:
-    st.session_state.combined_memory = CombinedMemory(
-        memories=[st.session_state.entity_memory, st.session_state.summary_memory]
-    )
+tools = [create_your_own]
+if selected_option == "TelecomFuture":
+    tools = [TelecomFuture, TelecomFuture_create_summary, TelecomFuture_summarise_presenters]
+elif selected_option == "GreenReport2023":
+    tools = [GreenReport2023, GreenReport2023_create_summary]
 
-prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are a helpful assistant whose knowledge and \
-    expertise are specifically focused on one event. Keep your language professional but informal. \
-    Your role is to assist in discussions about various aspects of this event, \
-    providing information and insights based on what was discussed there. Your assistance is confined to the \
-    topics, data, and discussions that took place during this event. Your name is Eve and you work for EventVive."""),
-    MessagesPlaceholder(variable_name="history"),
-    ("user", "{input}"),
-    MessagesPlaceholder(variable_name="agent_scratchpad")
-])
-chain = RunnablePassthrough.assign(
-    agent_scratchpad=lambda x: format_to_openai_functions(x["intermediate_steps"])
-) | prompt | model | OpenAIFunctionsAgentOutputParser()
-qa = AgentExecutor(
-    agent=chain,
-    tools=tools,
-    verbose=verbose,
-    memory=st.session_state.entity_memory,
-    return_intermediate_steps=False,
-)
+# Add to session state Agent and all of its properties and states, including the memory component
+if 'agent' not in st.session_state:
+    st.session_state.agent = Agent(
+                                    tools=tools,
+                                    llm=MODEL,
+                                    llm_temp=llm_temp,
+                                    verbose=verbose)
 
-
-# read the text file into string
-text_file = open("KnowledgeBase.txt", "r")  # open text file in read mode
-KnowledgeBase = text_file.read()  # read whole file to a string
-text_file.close()  # close file
-
-headers_to_split_on = [
-    ("#", "Headline")
-]
-
-markdown_splitter = MarkdownHeaderTextSplitter(
-    headers_to_split_on=headers_to_split_on
-)
-md_header_splits = markdown_splitter.split_text(KnowledgeBase)  # markdown header splits
+# functions = [format_tool_to_openai_function(f) for f in tools]
+# llm = ChatOpenAI(model_name=MODEL, temperature=llm_temp)
+# model = llm.bind(functions=functions)
+# # Create a ConversationEntityMemory object if not already created
+# if 'entity_memory' not in st.session_state:
+#     st.session_state.entity_memory = ConversationEntityMemory(
+#         llm=llm,
+#         entity_extraction_prompt=ENTITY_EXTRACTION_PROMPT,
+#         entity_summarization_prompt=ENTITY_SUMMARIZATION_PROMPT,
+#         return_messages=True,
+#         memory_key="chat_history",
+#     )
+# # DEFINITION BUT NOT USED IN THE CODE YET. MEMORY KEY ISSUES
+# if 'summary_memory' not in st.session_state:
+#     st.session_state.summary_memory = ConversationSummaryMemory(
+#         llm=llm,
+#         input_key="input",
+#         memory_key="chat_history",
+#     )
+# if 'combined_memory' not in st.session_state:
+#     st.session_state.combined_memory = CombinedMemory(
+#         memories=[st.session_state.entity_memory, st.session_state.summary_memory]
+#     )
+#
+# prompt = ChatPromptTemplate.from_messages([
+#     ("system", """You are a helpful assistant whose knowledge and \
+#     expertise are specifically focused on one event. Keep your language professional but informal. \
+#     Your role is to assist in discussions about various aspects of this event, \
+#     providing information and insights based on what was discussed there. Your assistance is confined to the \
+#     topics, data, and discussions that took place during this event. Your name is Eve and you work for EventVive."""),
+#     MessagesPlaceholder(variable_name="history"),
+#     ("user", "{input}"),
+#     MessagesPlaceholder(variable_name="agent_scratchpad")
+# ])
+# chain = RunnablePassthrough.assign(
+#     agent_scratchpad=lambda x: format_to_openai_functions(x["intermediate_steps"])
+# ) | prompt | model | OpenAIFunctionsAgentOutputParser()
+# qa = AgentExecutor(
+#     agent=chain,
+#     tools=tools,
+#     verbose=verbose,
+#     memory=st.session_state.entity_memory,
+#     return_intermediate_steps=False,
+# )
 
 
 # ################################################
 # ## FRONT INTERFACE
-
-
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -198,11 +270,11 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Display AI message on initial launch
-if len(st.session_state.messages) == 0:
-    welcome_message = """
-Hello and a warm welcome to EventVive 👋 I'm Eve, your go-to for a nifty bit of banter and insight on the \
-world of significant events. Delighted to have you with us! \n\n
+# Set welcome message based on selection
+welcome_message = "Hello, how can I assist you today?"  # Default message
+if selected_option == "TelecomFuture":
+    welcome_message = """Hello and a warm welcome to EventVive 👋 I'm Eve, your go-to for a nifty bit of banter and \
+insight on the world of significant events. Delighted to have you with us! \n\n
 
 Today, we're diving into the rich discussions \
 from the Royal Academy of Engineering's "Critical Conversations", \
@@ -228,7 +300,27 @@ just about learning what was said, but applying it to your unique situation.\n\n
 
 So, what's on your mind? Let's \
 get cracking and make this a conversation to remember! 🕵️‍♀️📚🌟
-    """
+"""
+elif selected_option == "GreenReport2023":
+    welcome_message = """Hello and a warm welcome to EventVive 👋 I'm Eve, your go-to for a nifty bit of banter and \
+insight on the world of significant events. Delighted to have you with us! \n\n
+
+Today, we're zooming into the Royal Aeronautical Society's "Greener by Design" Annual Report 2022-2023, \
+showcasing the aerospace industry's leaps in environmental sustainability. This info-packed session features \
+experts tackling climate change forecasts, aviation's decarbonization challenges, and the innovative Sustainable \
+Aviation Fuel (SAF). We'll also explore advancements in electric and hybrid aircraft, the potential of hydrogen \
+fuel cell hybrid electric aircraft, and the intriguing concept of virtual interlining in airlines.
+
+But there's more! We're delving into Carbon Budgets, the Net Zero Challenge, and the compelling science of \
+contrail management. Plus, we'll unravel the impacts of non-CO2 emissions in aviation. Get ready for a journey \
+through a blend of challenges, innovative solutions, and forward-thinking strategies! 🌍✈️🔬
+
+So, what's on your mind? Let's \
+get cracking and make this a conversation to remember! 🕵️‍♀️📚🌟
+"""
+
+# Display AI message on initial launch
+if len(st.session_state.messages) == 0:
     with st.chat_message("assistant"):
         st.markdown(welcome_message)
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
@@ -239,24 +331,24 @@ if user_message := st.chat_input("How can I help?"):
     st.chat_message("user").markdown(user_message)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": user_message})
-    # Retrieve relevant knowledge from knowledge base
-    # retrieved_knowledge_base = vectordb.max_marginal_relevance_search(user_message, k=1)
-    # Create the response to user message
-    # response = Conversation(
-    #    {"input_documents": retrieved_knowledge_base, "human_input": user_message},
-    #    return_only_outputs=True
-    # )['output_text']
+
+    # LOG activity in GOOGLE SHEETS
+    spreadsheet = create_gsheet_connection()
+    save_data_to_sheet(spreadsheet.sheet1, st.session_state.username, user_message, selected_option)
 
     if len(user_message) >= 200:
-        user_message = "Tell me that my query was way to long in a UK style sassy way, and advise it should be less than 200 characters long"
+        user_message = """Tell me that my query was way to long in a UK style sassy way, and advise it \
+        should be less than 200 characters long"""
 
-    AI_response = qa.invoke({"input": user_message})
-    AI_output = AI_response['output']
+    #AI_response = qa.invoke({"input": user_message})
+    AI_output = st.session_state.agent.convchain(user_message)
+    #AI_output = AI_response['output']
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(AI_output)
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": AI_output})
+
 
 #st.sidebar.download_button(
 #    label="Download the conversation",
@@ -264,6 +356,22 @@ if user_message := st.chat_input("How can I help?"):
 #    file_name='LeanBoost_ConversationHistory.txt',
 #    mime='text',
 #)
+
+
+with st.sidebar:
+    with st.form("Feedback Form", clear_on_submit=True):
+        username = st.session_state.get("username", "there")  # Fallback to "there" if username is not set
+        feedback = st.text_area(f"Hi {username}, we would love to hear your feedback!")
+        submit_button = st.form_submit_button("Submit Feedback")
+
+        if submit_button and feedback:
+            # Connect to Google Sheets and save the feedback
+            spreadsheet = create_gsheet_connection()
+            feedback_sheet = spreadsheet.sheet1  # Assuming you're using the first worksheet
+            save_feedback_to_sheet(feedback_sheet, st.session_state.username, feedback, selected_option)
+            st.success("Feedback submitted successfully!")
+
+
 
 
 

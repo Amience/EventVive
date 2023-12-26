@@ -16,13 +16,13 @@ def create_your_own(query: str) -> str:
 
 
 @tool
-def eventvive(query: str) -> str:
+def TelecomFuture(query: str) -> str:
     """This function can search through the transcript of the event and get most relevant facts, opinions, people, \
     and or Q&A from the audience"""
 
     # Load existing vector database
     embedding = OpenAIEmbeddings()
-    persist_directory_subpart = 'docs/chroma/'
+    persist_directory_subpart = 'docs/chroma/telecomfuture/'
     vectordb_subpartE = Chroma(
         persist_directory=persist_directory_subpart,
         embedding_function=embedding
@@ -41,7 +41,7 @@ def eventvive(query: str) -> str:
 
 
 @tool
-def create_summary(query: str) -> str:
+def TelecomFuture_create_summary(query: str) -> str:
     """This function answers questions that are generic about the event, such as summary, overall overview of
     technologies, concepts, people, or ideas that are not specific but cover the wider scope of the event."""
 
@@ -105,7 +105,7 @@ telecommunications, highlighting its pivotal role in society, industry, and the 
         input_variables=["query"], template=PROMPT_TEMPLATE
     )
 
-    llm = ChatOpenAI(model_name="gpt-4", temperature=0)
+    llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0)
     chain = LLMChain(llm=llm, prompt=PROMPT)
     summary = chain.run(query)
 
@@ -116,7 +116,7 @@ telecommunications, highlighting its pivotal role in society, industry, and the 
 
 
 @tool
-def summarise_presenters(query: str) -> str:
+def TelecomFuture_summarise_presenters(query: str) -> str:
     """This function answers questions that are specifically about the presenters of the event, and people \
     in the panel"""
 
@@ -165,7 +165,111 @@ transmission speeds and lower latency.
         input_variables=["query"], template=PROMPT_TEMPLATE
     )
 
-    llm = ChatOpenAI(model_name="gpt-4", temperature=0)
+    llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0)
+    chain = LLMChain(llm=llm, prompt=PROMPT)
+    summary = chain.run(query)
+
+    if not summary:
+        return "No good summary was found"
+
+    return f'Summary: {summary}'
+
+
+
+@tool
+def GreenReport2023(query: str) -> str:
+    """This function can search through the transcript of the event and get most relevant facts, opinions, people"""
+
+    # Load existing vector database
+    embedding = OpenAIEmbeddings()
+    persist_directory_subpart = 'docs/chroma/GreenReport2023/'
+    vectordb_subpartE = Chroma(
+        persist_directory=persist_directory_subpart,
+        embedding_function=embedding
+    )
+
+    retriever = vectordb_subpartE.as_retriever(search_type="mmr", search_kwargs={'k': 5, 'fetch_k': 10})
+    relevant_documents = retriever.get_relevant_documents(query)
+    summaries = []
+    for doc in relevant_documents:
+        # Extract the content
+        doc_content = doc.page_content
+        summaries.append(f"Summary: {doc_content}")
+    if not summaries:
+        return "No good information was found"
+    return "\n\n".join(summaries)
+
+
+@tool
+def GreenReport2023_create_summary(query: str) -> str:
+    """This function answers questions that are generic about the event, such as summary, overall overview of
+    technologies, concepts, people, or ideas that are not specific but cover the wider scope of the event."""
+
+    PROMPT_TEMPLATE = ("""Answer the query below using information delimited between ### characters below. 
+
+Query: 
+{query}
+
+Event Summary:
+###
+Greener by Design Annual Report 2022-2023 - Royal Aeronautical Society
+
+The Royal Aeronautical Society's comprehensive report on aerospace's strides towards environmental \
+sustainability encompasses a broad range of pivotal topics, highlighted by an assembly of experts in \
+various facets of the field.
+
+Climate Urgency and Aviation's Environmental Challenge:
+The report kicks off by echoing the World Meteorological Organization's alarming prediction: a 66% likelihood \
+of global temperatures surpassing the critical 1.5C mark above pre-industrial levels in the next few years.
+Aviation’s struggle with decarbonization is a core focus. The sector, recognized as challenging to decarbonize, \
+grapples with reducing CO2 emissions and the costly transition towards greener alternatives.
+
+Sustainable Aviation Fuel (SAF):
+SAF emerges as a promising solution, poised to significantly enhance fuel efficiency. Despite potential benefits, \
+the report highlights challenges in SAF production and utilization, stressing the need for efficient and sustainable \
+methods that don’t compromise food production.
+
+Advancements in Aircraft Technologies:
+The document delves into the evolution of electric and hybrid aircraft, underscoring the progress and challenges \
+in extending their range and seating capacities.
+Hydrogen fuel cell hybrid electric aircraft are spotlighted, discussing their feasibility, challenges, and recent \
+breakthroughs, including several inaugural flights and ongoing developments.
+
+Virtual Interlining in Airlines:
+The innovative concept of virtual interlining marks a significant shift in airline operations. This trend, driven \
+by cost-effectiveness, involves passengers booking connecting flights between airlines without formal agreements, \
+highlighting a new approach to travel logistics.
+
+Carbon Budgets and the Net Zero Challenge:
+The report discusses the importance of meeting interim carbon reduction targets on the pathway to achieving Net \
+Zero by 2050. It proposes various operational and technological strategies, emphasizing the need for effective \
+policy measures alongside technological innovations.
+
+Contrail Management:
+A significant portion of the report is dedicated to the science behind contrails and their environmental impact. \
+The discussion revolves around the formation, impact, and potential strategies to mitigate contrails, emphasizing \
+their significant contribution to atmospheric warming.
+
+Non-CO2 Climate Effects:
+Non-CO2 effects on climate change, often overshadowed by CO2 emissions, receive substantial attention. \
+The report explores various research findings, technological advancements, and policy implications concerning \
+non-CO2 emissions.
+
+Collaborative Efforts and Future Outlook:
+The report concludes with a focus on the Greener by Design Group's objectives and activities. It highlights the \
+group's role in researching, assessing, and advising on aviation's environmental impact, promoting best practices, \
+and fostering a balanced understanding of the sector's environmental programs.
+
+In essence, the "Greener by Design" Annual Report for 2022-2023 presents a multi-faceted view of the aerospace \
+industry’s environmental challenges and advancements. It serves as a repository of current knowledge, strategies, \
+and future directions in the journey towards sustainable aviation.
+###
+    """)
+    PROMPT = PromptTemplate(
+        input_variables=["query"], template=PROMPT_TEMPLATE
+    )
+
+    llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0)
     chain = LLMChain(llm=llm, prompt=PROMPT)
     summary = chain.run(query)
 

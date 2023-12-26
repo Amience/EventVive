@@ -28,7 +28,11 @@ class Agent(param.Parameterized):
             memory_key="chat_history",
         )
         self.prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are helpful but sassy assistant"),
+            ("system", """You are a helpful assistant whose knowledge and \
+    expertise are specifically focused on one event. Keep your language professional but informal. \
+    Your role is to assist in discussions about various aspects of this event, \
+    providing information and insights based on what was discussed there. Your assistance is confined to the \
+    topics, data, and discussions that took place during this event. Your name is Eve and you work for EventVive."""),
             MessagesPlaceholder(variable_name="history"),
             ("user", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad")
@@ -48,9 +52,8 @@ class Agent(param.Parameterized):
         if not query:
             return
         result = self.qa.invoke({"input": query})
-
-        #self.answer = result['output']
-        return result
+        self.answer = result['output']
+        return self.answer
 
 
     def clr_history(self ,count=0):
