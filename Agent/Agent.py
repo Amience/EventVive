@@ -19,14 +19,14 @@ class Agent(param.Parameterized):
         self.panels = []
         self.functions = [format_tool_to_openai_function(f) for f in tools]
         self.model = ChatOpenAI(model_name=llm, temperature=llm_temp).bind(functions=self.functions)
-        # self.memory = ConversationBufferMemory(return_messages=True ,memory_key="chat_history")
-        self.memory = ConversationEntityMemory(
-            llm=ChatOpenAI(model_name=llm, temperature=llm_temp),
-            entity_extraction_prompt=ENTITY_EXTRACTION_PROMPT,
-            entity_summarization_prompt=ENTITY_SUMMARIZATION_PROMPT,
-            return_messages=True,
-            memory_key="chat_history",
-        )
+        self.memory = ConversationBufferMemory(return_messages=True, memory_key="history")
+        # self.memory = ConversationEntityMemory(
+        #    llm=ChatOpenAI(model_name=llm, temperature=llm_temp),
+        #    entity_extraction_prompt=ENTITY_EXTRACTION_PROMPT,
+        #    entity_summarization_prompt=ENTITY_SUMMARIZATION_PROMPT,
+        #    return_messages=True,
+        #    memory_key="chat_history",
+        #)
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", """You are a helpful assistant whose knowledge and \
     expertise are specifically focused on one event. Keep your language professional but informal. \
