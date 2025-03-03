@@ -9,7 +9,15 @@ from langchain.tools.render import format_tool_to_openai_function
 
 from Agent.prompts import ENTITY_EXTRACTION_PROMPT, ENTITY_SUMMARIZATION_PROMPT
 import param
+from langchain.schema import FunctionDefinition
 
+import pydantic
+
+# Ensure LangChain uses Pydantic v2
+if pydantic.VERSION.startswith("2"):
+    from langchain.pydantic_v1 import ValidationError
+else:
+    from pydantic import ValidationError
 
 class Agent(param.Parameterized):
 
@@ -17,8 +25,12 @@ class Agent(param.Parameterized):
         super(Agent, self).__init__(**params)
         self.answer = None
         self.panels = []
-        self.functions = [format_tool_to_openai_function(f) for f in tools]
-        self.model = ChatOpenAI(model_name=llm, temperature=llm_temp).bind(functions=self.functions)
+
+        self.functions = [FunctionDefinition.from_tool(f) for f in tools]
+        self.model = ChatOpenAI(model_name=llm, temperature=llm_temp, functions=self.functions)
+
+        #self.functions = [format_tool_to_openai_function(f) for f in tools]
+        #self.model = ChatOpenAI(model_name=llm, temperature=llm_temp).bind(functions=self.functions)
         self.memory = ConversationBufferMemory(return_messages=True, memory_key="history")
         # self.memory = ConversationEntityMemory(
         #    llm=ChatOpenAI(model_name=llm, temperature=llm_temp),
@@ -40,12 +52,18 @@ class Agent(param.Parameterized):
         self.chain = RunnablePassthrough.assign(
             agent_scratchpad=lambda x: format_to_openai_functions(x["intermediate_steps"])
         ) | self.prompt | self.model | OpenAIFunctionsAgentOutputParser()
+        #self.qa = AgentExecutor(
+        #    agent=self.chain,
+        #    tools=tools,
+        #    verbose=verbose,
+        #    memory=self.memory,
+        #    return_intermediate_steps=False,
+        #)
         self.qa = AgentExecutor(
             agent=self.chain,
             tools=tools,
             verbose=verbose,
-            memory=self.memory,
-            return_intermediate_steps=False,
+            memory=self.memory
         )
 
     def convchain(self, query):
