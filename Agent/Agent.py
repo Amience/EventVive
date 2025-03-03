@@ -28,9 +28,9 @@ class Agent(param.Parameterized):
         self.answer = None
         self.panels = []
 
-        self.functions = [Tool.from_function(f) for f in        
+        self.functions = [Tool.from_function(f) for f in tools]
         self.model = ChatOpenAI(model_name=llm, temperature=llm_temp, functions=self.functions)
-
+        
         #self.functions = [format_tool_to_openai_function(f) for f in tools]
         #self.model = ChatOpenAI(model_name=llm, temperature=llm_temp).bind(functions=self.functions)
         self.memory = ConversationBufferMemory(return_messages=True, memory_key="history")
