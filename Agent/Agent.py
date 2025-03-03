@@ -9,8 +9,10 @@ from langchain.tools.render import format_tool_to_openai_function
 
 from Agent.prompts import ENTITY_EXTRACTION_PROMPT, ENTITY_SUMMARIZATION_PROMPT
 import param
-from langchain.schema import FunctionDefinition
+from langchain.tools import Tool
 
+
+                  
 import pydantic
 
 # Ensure LangChain uses Pydantic v2
@@ -26,7 +28,7 @@ class Agent(param.Parameterized):
         self.answer = None
         self.panels = []
 
-        self.functions = [FunctionDefinition.from_tool(f) for f in tools]
+        self.functions = [Tool.from_function(f) for f in        
         self.model = ChatOpenAI(model_name=llm, temperature=llm_temp, functions=self.functions)
 
         #self.functions = [format_tool_to_openai_function(f) for f in tools]
