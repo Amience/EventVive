@@ -28,7 +28,10 @@ class Agent(param.Parameterized):
         self.answer = None
         self.panels = []
 
-        self.functions = [Tool.from_function(f) for f in tools]
+        self.functions = [
+            Tool(name=f.__name__, func=f, description=f.__doc__ or "No description available.")
+            for f in tools
+        ]
         self.model = ChatOpenAI(model_name=llm, temperature=llm_temp, functions=self.functions)
         
         #self.functions = [format_tool_to_openai_function(f) for f in tools]
